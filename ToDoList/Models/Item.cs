@@ -30,21 +30,29 @@ namespace ToDoList.Models
             return placeholderItem;
         }
 
-        // Placeholder for ClearAll() method, to be updated for database interaction
+        // Updated ClearAll method to interact with the database
         public static void ClearAll()
         {
+            MySqlConnection conn = new MySqlConnection(DBConfiguration.ConnectionString);
+            conn.Open();
+            MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
+            cmd.CommandText = @"DELETE FROM items;";
+            cmd.ExecuteNonQuery();
+            conn.Close();
+            if (conn != null)
+            {
+                conn.Dispose();
+            }
         }
 
         // Method to get all items from the database
         public static List<Item> GetAll()
         {
-            List<Item> allItems = new List<Item>();
+            List<Item> allItems = new List<Item> { };
             MySqlConnection conn = new MySqlConnection(DBConfiguration.ConnectionString);
             conn.Open();
-
             MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
             cmd.CommandText = @"SELECT * FROM items;";
-
             MySqlDataReader rdr = cmd.ExecuteReader() as MySqlDataReader;
             while (rdr.Read())
             {
