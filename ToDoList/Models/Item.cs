@@ -7,7 +7,7 @@ namespace ToDoList.Models
     public class Item
     {
         public string Description { get; set; }
-        public int Id { get; set; } // Setter for database operations
+        public int Id { get; set; }
 
         public Item(string description)
         {
@@ -18,6 +18,19 @@ namespace ToDoList.Models
         {
             Description = description;
             Id = id;
+        }
+
+        public void Save()
+        {
+            using (MySqlConnection conn = new MySqlConnection(DBConfiguration.ConnectionString))
+            {
+                conn.Open();
+                MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
+                cmd.CommandText = @"INSERT INTO items (description) VALUES (@ItemDescription);";
+                cmd.Parameters.AddWithValue("@ItemDescription", this.Description);
+                cmd.ExecuteNonQuery();
+                Id = (int)cmd.LastInsertedId;
+            }
         }
 
         public static void ClearAll()
@@ -53,22 +66,23 @@ namespace ToDoList.Models
 
         public static Item Find(int searchId)
         {
+            // Implementation will be updated later
             Item placeholderItem = new Item("placeholder item");
             return placeholderItem;
         }
 
         public override bool Equals(System.Object? otherItem)
-{
-    if (otherItem == null || !(otherItem is Item newItem))
-    {
-        return false;
-    }
-    return this.Id == newItem.Id && this.Description == newItem.Description;
-}
+        {
+            if (!(otherItem is Item newItem))
+            {
+                return false;
+            }
+            return Id == newItem.Id && Description == newItem.Description;
+        }
 
         public override int GetHashCode()
         {
-            return this.Id.GetHashCode();
+            return Id.GetHashCode();
         }
     }
 }
