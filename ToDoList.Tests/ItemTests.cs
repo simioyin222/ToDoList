@@ -11,6 +11,7 @@ namespace ToDoList.Tests
     public class ItemTests : IDisposable
     {
         public IConfigurationRoot Configuration { get; set; }
+
         public ItemTests()
         {
             IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json");
@@ -26,11 +27,16 @@ namespace ToDoList.Tests
         [TestMethod]
         public void GetAll_DatabaseEmptyAtFirst_0()
         {
-            // Arrange - Make sure the database is cleared before testing
             int result = Item.GetAll().Count;
-
-            // Assert - Check that the database starts empty
             Assert.AreEqual(0, result);
+        }
+
+        [TestMethod]
+        public void Equals_ReturnsTrueIfDescriptionsAreTheSame_Item()
+        {
+            Item firstItem = new Item("Mow the lawn", 1);
+            Item secondItem = new Item("Mow the lawn", 1);
+            Assert.AreEqual(firstItem, secondItem);
         }
     }
 }
