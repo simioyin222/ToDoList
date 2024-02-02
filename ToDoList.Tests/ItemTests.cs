@@ -42,16 +42,22 @@ namespace ToDoList.Tests
         [TestMethod]
         public void Save_SavesToDatabase_ItemList()
         {
-            // Arrange
             Item testItem = new Item("Mow the lawn");
-
-            // Act
             testItem.Save();
             List<Item> result = Item.GetAll();
             List<Item> testList = new List<Item>{testItem};
-
-            // Assert
             CollectionAssert.AreEqual(testList, result);
+        }
+
+        [TestMethod]
+        public void Find_ReturnsCorrectItemFromDatabase_Item()
+        {
+            Item newItem = new Item("Mow the lawn");
+            newItem.Save();
+            Item newItem2 = new Item("Wash dishes");
+            newItem2.Save();
+            Item foundItem = Item.Find(newItem.Id);
+            Assert.AreEqual(newItem, foundItem);
         }
     }
 }
